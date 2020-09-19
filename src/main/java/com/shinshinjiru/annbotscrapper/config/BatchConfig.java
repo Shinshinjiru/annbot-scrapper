@@ -2,12 +2,15 @@ package com.shinshinjiru.annbotscrapper.config;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
 
 /**
  * Batch configuration.
@@ -19,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class BatchConfig extends DefaultBatchConfigurer {
     @Autowired
     private JobBuilderFactory jobs;
 
@@ -30,6 +33,11 @@ public class BatchConfig {
     @Autowired
     @Qualifier("processPage")
     private Step processPage;
+
+    @Override
+    public void setDataSource(DataSource dataSource) {
+        //This BatchConfigurer ignores any DataSource
+    }
 
     @Bean
     public Job job() {
