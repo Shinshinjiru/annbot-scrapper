@@ -33,29 +33,6 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
     private Document document;
 
     /**
-     * Given the current context in the form of a step contribution, do whatever
-     * is necessary to process this unit inside a transaction. Implementations
-     * return {@link RepeatStatus#FINISHED} if finished. If not they return
-     * {@link RepeatStatus#CONTINUABLE}. On failure throws an exception.
-     *
-     * @param contribution mutable state to be passed back to update the current
-     *                     step execution
-     * @param chunkContext attributes shared between invocations but not between
-     *                     restarts
-     * @return an {@link RepeatStatus} indicating whether processing is
-     * continuable. Returning {@code null} is interpreted as {@link RepeatStatus#FINISHED}
-     * @throws Exception thrown if error occurs during execution.
-     */
-    @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        log.info("Reading AnimeNewsNetwork home page...");
-
-        document = Jsoup.parse(new URL(url), timeout);
-
-        return RepeatStatus.FINISHED;
-    }
-
-    /**
      * Initialize the state of the listener with the {@link StepExecution} from
      * the current scope.
      *
@@ -63,7 +40,7 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        log.debug("ReadPageTasklet init");
+        log.info("ReadPageTasklet init");
     }
 
     /**
@@ -84,8 +61,31 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
         stepExecution.getExecutionContext()
                 .put("homepage", document);
 
-        log.debug("ReadPageTasklet end");
+        log.info("ReadPageTasklet end");
 
         return ExitStatus.COMPLETED;
+    }
+
+    /**
+     * Given the current context in the form of a step contribution, do whatever
+     * is necessary to process this unit inside a transaction. Implementations
+     * return {@link RepeatStatus#FINISHED} if finished. If not they return
+     * {@link RepeatStatus#CONTINUABLE}. On failure throws an exception.
+     *
+     * @param contribution mutable state to be passed back to update the current
+     *                     step execution
+     * @param chunkContext attributes shared between invocations but not between
+     *                     restarts
+     * @return an {@link RepeatStatus} indicating whether processing is
+     * continuable. Returning {@code null} is interpreted as {@link RepeatStatus#FINISHED}
+     * @throws Exception thrown if error occurs during execution.
+     */
+    @Override
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        log.info("Reading AnimeNewsNetwork home page...");
+
+        document = Jsoup.parse(new URL(url), timeout);
+
+        return RepeatStatus.FINISHED;
     }
 }
