@@ -2,7 +2,8 @@ package com.shinshinjiru.annbotscrapper.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * News Item model.
@@ -14,7 +15,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Builder
-public class NewsItem {
+public class NewsItem implements Serializable {
     private String thumbnail;
     private String title;
     private String preview;

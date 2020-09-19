@@ -2,7 +2,6 @@ package com.shinshinjiru.annbotscrapper.batch;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -11,6 +10,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
@@ -23,6 +23,7 @@ import java.net.URL;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Slf4j
+@Component
 public class ReadPageTasklet implements Tasklet, StepExecutionListener {
     @Value("${ann.url}")
     private String url;
@@ -30,7 +31,7 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
     @Value("${ann.timeout}")
     private int timeout;
 
-    private Document document;
+    private String document;
 
     /**
      * Initialize the state of the listener with the {@link StepExecution} from
@@ -58,7 +59,8 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        stepExecution.getExecutionContext()
+        stepExecution.getJobExecution()
+                .getExecutionContext()
                 .put("homepage", document);
 
         log.info("ReadPageTasklet end");
@@ -84,7 +86,7 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("Reading AnimeNewsNetwork home page...");
 
-        document = Jsoup.parse(new URL(url), timeout);
+        document = Jsoup.parse(new URL(url), timeout).toString();
 
         return RepeatStatus.FINISHED;
     }

@@ -2,7 +2,7 @@ package com.shinshinjiru.annbotscrapper.batch;
 
 import com.shinshinjiru.annbotscrapper.model.NewsItem;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.nodes.Document;
+import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
@@ -12,6 +12,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Slf4j
+@Component
 public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
     @Value("${ann.url}")
     private String url;
@@ -42,7 +44,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
         log.info("ProcessPageTasklet init");
 
         //noinspection ConstantConditions
-        news = ((Document) stepExecution.getExecutionContext().get("homepage"))
+        news = Jsoup.parse((String) stepExecution.getJobExecution().getExecutionContext().get("homepage"))
                 .select(".herald.box.news");
 
         result = new ArrayList<>(news.size());
@@ -65,7 +67,9 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
     public ExitStatus afterStep(StepExecution stepExecution) {
         log.info("ProcessPageTasklet end");
 
-        stepExecution.getExecutionContext().put("news", result);
+        stepExecution.getJobExecution()
+                .getExecutionContext()
+                .put("news", result);
 
         return ExitStatus.COMPLETED;
     }
@@ -103,7 +107,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
             // <div class="comments"><a href="/cms/discuss/{ID}">comments</a></div>
             var id = n.select(".wrap .byline .comments a")
                     .attr("href")
-                    .split("/")[2];
+                    .split("/")[3];
 
             var item =  NewsItem.builder()
                             .thumbnail(url + thumbnail)
