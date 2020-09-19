@@ -27,10 +27,15 @@ public class BatchConfig {
     @Qualifier("readPage")
     private Step readPage;
 
+    @Autowired
+    @Qualifier("processPage")
+    private Step processPage;
+
     @Bean
     public Job job() {
         return jobs.get("annbot-scrapper")
                 .start(readPage)
+                .next(processPage)
                 .build();
     }
 }
