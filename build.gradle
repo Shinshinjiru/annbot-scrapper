@@ -39,6 +39,7 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
     implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'redis.clients:jedis:3.3.0'
 }
 
 dependencyManagement {
