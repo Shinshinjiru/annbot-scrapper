@@ -1,5 +1,6 @@
 package com.shinshinjiru.annbotscrapper.config;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -45,5 +46,15 @@ public class ApplicationConfig {
         template.setConnectionFactory(jedisConnectionFactory());
 
         return template;
+    }
+
+    /**
+     * Configures the RabbitMQ queue.
+     *
+     * @return RabbitMQ queue.
+     */
+    @Bean
+    public Queue queue() {
+        return new Queue("shinshinjiru", false);
     }
 }
