@@ -2,6 +2,7 @@ package com.shinshinjiru.annbotscrapper.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
+@RedisHash("NewsItem")
 public class NewsItem implements Serializable {
     private String thumbnail;
     private String title;
