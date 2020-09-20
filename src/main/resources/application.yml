@@ -1,3 +1,4 @@
 ann:
   url: https://www.animenewsnetwork.com
   timeout: 30000
+  maxItems: 10
