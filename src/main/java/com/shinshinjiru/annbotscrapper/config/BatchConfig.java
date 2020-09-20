@@ -34,6 +34,10 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Qualifier("processPage")
     private Step processPage;
 
+    @Autowired
+    @Qualifier("filterNewsItems")
+    private Step filterNewsItems;
+
     @Override
     public void setDataSource(DataSource dataSource) {
         //This BatchConfigurer ignores any DataSource
@@ -44,6 +48,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
         return jobs.get("annbot-scrapper")
                 .start(readPage)
                 .next(processPage)
+                .next(filterNewsItems)
                 .build();
     }
 }
