@@ -67,10 +67,6 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
     public ExitStatus afterStep(StepExecution stepExecution) {
         log.info("PublishNewsTasklet end");
 
-        stepExecution.getJobExecution()
-                .getExecutionContext()
-                .put("news", result);
-
         return ExitStatus.COMPLETED;
     }
 
@@ -89,10 +85,16 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-        log.debug("Publishing items...");
+        if (result.size() == 0) {
+            log.info("No new items.");
+
+            return RepeatStatus.FINISHED;
+        }
+
+        log.info("Publishing items...");
         rabbit.convertAndSend("shinshinjiru", result);
 
-        log.debug("Updating redis...");
+        log.info("Updating redis...");
         repository.deleteAll();
         repository.save(result.get(0));
 
