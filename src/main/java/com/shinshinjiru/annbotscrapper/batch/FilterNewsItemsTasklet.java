@@ -91,17 +91,19 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-        log.debug("Retrieving last item from redis...");
-        var lastItems = repository.findAll();
+        log.info("Retrieving last item from redis...");
+        var lastItems = (ArrayList<NewsItem>)repository.findAll();
 
         // Build takeWhile predicate.
         // Default to take all.
-        Predicate<NewsItem> takeWhile = newsItem -> false;
-        while (lastItems.iterator().hasNext()) {
+        Predicate<NewsItem> takeWhile = newsItem -> true;
+        if (lastItems.size() > 0) {
+            var last = lastItems.get(lastItems.size() - 1);
             // Take only until last item id.
-            takeWhile = newsItem -> newsItem.getId() == lastItems.iterator().next().getId();
+            takeWhile = newsItem -> newsItem.getId() != last.getId();
         }
 
+        log.info("Filtering up to "+ max +" items...");
         // Take all items until last item.
         var resultsUntil = result.stream()
                 .takeWhile(takeWhile)
