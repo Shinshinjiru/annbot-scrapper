@@ -38,6 +38,10 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Qualifier("filterNewsItems")
     private Step filterNewsItems;
 
+    @Autowired
+    @Qualifier("publishNews")
+    private Step publishNews;
+
     @Override
     public void setDataSource(DataSource dataSource) {
         //This BatchConfigurer ignores any DataSource
@@ -49,6 +53,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
                 .start(readPage)
                 .next(processPage)
                 .next(filterNewsItems)
+                .next(publishNews)
                 .build();
     }
 }
