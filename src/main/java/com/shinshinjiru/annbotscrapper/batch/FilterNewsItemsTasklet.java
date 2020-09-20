@@ -94,19 +94,20 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
         log.info("Retrieving last item from redis...");
         var lastItems = (ArrayList<NewsItem>)repository.findAll();
 
-        // Build takeWhile predicate.
-        // Default to take all.
-        Predicate<NewsItem> takeWhile = newsItem -> true;
-        if (lastItems.size() > 0) {
-            var last = lastItems.get(lastItems.size() - 1);
-            // Take only until last item id.
-            takeWhile = newsItem -> newsItem.getId() != last.getId();
+        // If redis is empty (first run).
+        // Return last max.
+        if (lastItems.size() == 0) {
+            result = result.subList(0, Math.min(max - 1, result.size()));
+
+            return RepeatStatus.FINISHED;
         }
 
         log.info("Filtering up to "+ max +" items...");
+        var last = lastItems.get(lastItems.size() - 1);
+
         // Take all items until last item.
         var resultsUntil = result.stream()
-                .takeWhile(takeWhile)
+                .takeWhile(n -> n.getId() != last.getId())
                 .collect(Collectors.toList());
 
         // Return last MAX items.
