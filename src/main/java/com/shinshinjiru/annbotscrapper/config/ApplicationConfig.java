@@ -1,6 +1,7 @@
 package com.shinshinjiru.annbotscrapper.config;
 
 import com.apollographql.apollo.ApolloClient;
+import okhttp3.OkHttpClient;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,9 @@ import redis.clients.jedis.JedisPoolConfig;
 public class ApplicationConfig {
     @Value("${anilist.api}")
     private String anilistApi;
+
+    @Value("${anilist.authToken}")
+    private String authToken;
 
     /**
      * Configures the Jedis driver.
@@ -67,6 +71,16 @@ public class ApplicationConfig {
     public ApolloClient apolloClient() {
         return ApolloClient.builder()
                 .serverUrl(anilistApi)
+                .okHttpClient(new OkHttpClient.Builder()
+                        .addInterceptor((c) -> {
+                            var request = c.request().newBuilder()
+                                    .addHeader("Authorization", "Bearer " + authToken)
+                                    .build();
+
+                            return c.proceed(request);
+                        })
+                        .build()
+                )
                 .build();
     }
 }
