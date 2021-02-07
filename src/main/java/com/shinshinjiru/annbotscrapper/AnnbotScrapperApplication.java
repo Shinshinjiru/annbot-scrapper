@@ -9,6 +9,7 @@ public class AnnbotScrapperApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AnnbotScrapperApplication.class, args).close();
+		System.exit(0);
 	}
 
 }
