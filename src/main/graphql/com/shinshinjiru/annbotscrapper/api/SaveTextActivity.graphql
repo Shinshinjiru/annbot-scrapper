@@ -1,0 +1,6 @@
+mutation SaveTextActivity($text: String) {
+    SaveTextActivity(text: $text) {
+        id,
+        text
+    }
+}
