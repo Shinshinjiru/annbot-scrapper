@@ -1,6 +1,8 @@
 package com.shinshinjiru.annbotscrapper.config;
 
+import com.apollographql.apollo.ApolloClient;
 import org.springframework.amqp.core.Queue;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,6 +20,9 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 @Configuration
 public class ApplicationConfig {
+    @Value("${anilist.api}")
+    private String anilistApi;
+
     /**
      * Configures the Jedis driver.
      *
@@ -56,5 +61,12 @@ public class ApplicationConfig {
     @Bean
     public Queue queue() {
         return new Queue("shinshinjiru", false);
+    }
+
+    @Bean
+    public ApolloClient apolloClient() {
+        return ApolloClient.builder()
+                .serverUrl(anilistApi)
+                .build();
     }
 }
