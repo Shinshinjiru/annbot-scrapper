@@ -7,10 +7,3 @@ spring:
       uri: ${CONFIGSERVER_HOST}
       username: root
       password: s3cr3t
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    virtual-host: ${RABBITMQ_USERNAME}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}

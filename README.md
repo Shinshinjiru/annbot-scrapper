@@ -3,4 +3,5 @@ ANNBot Scrapper
 
 Spring Batch that scraps the latest news from AnimeNewsNetwork.
 
-The scrapped news are published through RabbitMQ to all the subscribed clients for letting them process them.
+The scrapped news are published to AniList.
+On the future they will be published to a RabbitMQ queue so other apps (like discord bots) can have the same feed.

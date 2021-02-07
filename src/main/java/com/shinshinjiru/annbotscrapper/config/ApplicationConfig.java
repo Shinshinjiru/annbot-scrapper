@@ -2,7 +2,6 @@ package com.shinshinjiru.annbotscrapper.config;
 
 import com.apollographql.apollo.ApolloClient;
 import okhttp3.OkHttpClient;
-import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,16 +54,6 @@ public class ApplicationConfig {
         template.setConnectionFactory(jedisConnectionFactory());
 
         return template;
-    }
-
-    /**
-     * Configures the RabbitMQ queue.
-     *
-     * @return RabbitMQ queue.
-     */
-    @Bean
-    public Queue queue() {
-        return new Queue("shinshinjiru", false);
     }
 
     @Bean
