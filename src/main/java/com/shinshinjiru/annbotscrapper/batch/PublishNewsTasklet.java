@@ -1,9 +1,9 @@
 package com.shinshinjiru.annbotscrapper.batch;
 
+import com.shinshinjiru.annbotscrapper.api.Client;
 import com.shinshinjiru.annbotscrapper.model.NewsItem;
 import com.shinshinjiru.annbotscrapper.repository.NewsItemRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -32,7 +32,7 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
     private NewsItemRepository repository;
 
     @Autowired
-    private RabbitTemplate rabbit;
+    private Client client;
 
     private List<NewsItem> result;
 
@@ -92,7 +92,7 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
         }
 
         log.info("Publishing items...");
-        rabbit.convertAndSend("shinshinjiru", result);
+        client.publish(result);
 
         log.info("Updating redis...");
         repository.deleteAll();
