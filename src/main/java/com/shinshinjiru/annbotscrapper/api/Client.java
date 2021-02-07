@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import reactor.core.publisher.Mono;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -60,6 +62,7 @@ public class Client {
                 );
             });
 
+            var future = new CompletableFuture<Boolean>();
             client.mutate(SaveTextActivityMutation.builder()
                     .text(msg.toString())
                     .build()
@@ -67,14 +70,21 @@ public class Client {
                     .enqueue(new ApolloCall.Callback<>() {
                         @Override
                         public void onResponse(@NotNull Response<SaveTextActivityMutation.Data> response) {
-                            log.info("News published to https://anilist.co/activity/"+ response.getData().SaveTextActivity.id);
+                            log.info("News published to https://anilist.co/activity/" + response.getData().SaveTextActivity.id);
+
+                            future.complete(true);
                         }
 
                         @Override
                         public void onFailure(@NotNull ApolloException e) {
                             log.warn("Couldn't publish news", e);
+
+                            future.completeExceptionally(e);
                         }
                     });
+
+            // Block thread until the request is finished
+            Mono.fromFuture(future).block();
         } catch (Exception e) {
             log.error("Couldn't publish news", e);
         }
