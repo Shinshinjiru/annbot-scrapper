@@ -3,12 +3,11 @@ package com.shinshinjiru.annbotscrapper.config;
 import com.apollographql.apollo.ApolloClient;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Configuration class.
@@ -27,20 +26,17 @@ public class ApplicationConfig {
     private String authToken;
 
     /**
-     * Configures the Jedis driver.
+     * Configures the Lettuce driver.
      *
-     * @return Jedis connection factory.
+     * @return Lettuce connection factory.
      */
     @Bean
-    public RedisConnectionFactory jedisConnectionFactory() {
-        var config = new JedisPoolConfig();
-        config.setMaxIdle(5);
-        config.setMinIdle(1);
-        config.setTestOnBorrow(true);
-        config.setTestOnReturn(true);
-        config.setTestWhileIdle(true);
-
-        return new JedisConnectionFactory(config);
+    public LettuceClientConfigurationBuilderCustomizer lettuceClientConfigurationBuilderCustomizer() {
+        return clientConfigurationBuilder -> {
+            if (clientConfigurationBuilder.build().isUseSsl()) {
+                clientConfigurationBuilder.useSsl().disablePeerVerification();
+            }
+        };
     }
 
     /**
@@ -49,9 +45,9 @@ public class ApplicationConfig {
      * @return Redis template.
      */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         var template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(jedisConnectionFactory());
+        template.setConnectionFactory(connectionFactory);
 
         return template;
     }
