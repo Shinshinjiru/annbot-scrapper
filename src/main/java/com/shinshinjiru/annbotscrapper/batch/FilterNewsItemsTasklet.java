@@ -97,7 +97,7 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
         // If redis is empty (first run).
         // Return last max.
         if (lastItems.size() == 0) {
-            result = result.subList(0, Math.min(max - 1, result.size()));
+            result = new ArrayList<>(result.subList(0, Math.min(max - 1, result.size())));
 
             return RepeatStatus.FINISHED;
         }

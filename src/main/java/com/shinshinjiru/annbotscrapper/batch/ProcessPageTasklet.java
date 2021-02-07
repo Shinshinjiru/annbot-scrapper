@@ -95,7 +95,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
                     .attr("data-src");
 
             // <div class="wrap"><a>{TITLE}</a></div>
-            var title = n.select(".wrap a")
+            var title = n.select(".wrap h3 a")
                     .text()
                     .trim();
 
@@ -111,7 +111,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
 
             var item =  NewsItem.builder()
                             .thumbnail(url + thumbnail)
-                            .title(url + title)
+                            .title(title)
                             .preview(preview)
                             .id(Integer.parseInt(id))
                             .build();
