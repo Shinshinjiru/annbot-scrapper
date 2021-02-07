@@ -4,4 +4,5 @@ ann:
   maxItems: 10
 
 anilist:
-  api: https://graphql.anilist.co'
+  api: https://graphql.anilist.co
+  authToken: ${AUTH_TOKEN}
