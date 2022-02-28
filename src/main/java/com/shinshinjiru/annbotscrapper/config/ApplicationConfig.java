@@ -1,13 +1,19 @@
 package com.shinshinjiru.annbotscrapper.config;
 
 import com.apollographql.apollo.ApolloClient;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import okio.Buffer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.io.IOException;
 
 /**
  * Configuration class.
@@ -18,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Configuration
+@Slf4j
 public class ApplicationConfig {
     @Value("${anilist.api}")
     private String anilistApi;
@@ -63,6 +70,42 @@ public class ApplicationConfig {
                                     .build();
 
                             return c.proceed(request);
+                        })
+                        .addInterceptor((c) -> {
+                            var request = c.request();
+
+                            try {
+                                final Request copy = request.newBuilder().build();
+                                final Buffer buffer = new Buffer();
+                                copy.body().writeTo(buffer);
+
+                                log.debug("REQUEST");
+                                log.debug(buffer.readUtf8());
+                            } catch (final IOException e) {
+                                log.warn("Failed to stringify request body: " + e.getMessage());
+                            }
+
+                            var response = c.proceed(request);
+                            var responseBody = response.body();
+                            if (responseBody == null) {
+                                return response;
+                            }
+
+                            var responseBodyString = responseBody.string();
+
+                            response = response.newBuilder()
+                                    .body(
+                                            ResponseBody.create(
+                                                    responseBody.contentType(),
+                                                    responseBodyString
+                                            )
+                                    )
+                                    .build();
+
+                            log.debug("RESPONSE");
+                            log.debug(responseBodyString);
+
+                            return response;
                         })
                         .build()
                 )

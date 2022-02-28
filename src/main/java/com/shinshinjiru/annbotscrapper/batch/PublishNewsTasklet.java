@@ -44,7 +44,7 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        log.info("PublishNewsTasklet init");
+        log.debug("PublishNewsTasklet init");
 
         //noinspection unchecked
         result = (ArrayList<NewsItem>) stepExecution.getJobExecution().getExecutionContext().get("news");
@@ -65,7 +65,7 @@ public class PublishNewsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("PublishNewsTasklet end");
+        log.debug("PublishNewsTasklet end");
 
         return ExitStatus.COMPLETED;
     }

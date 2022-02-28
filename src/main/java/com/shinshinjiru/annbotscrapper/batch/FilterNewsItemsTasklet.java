@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +46,7 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        log.info("FilterNewsItemsTasklet init");
+        log.debug("FilterNewsItemsTasklet init");
 
         //noinspection unchecked
         result = (ArrayList<NewsItem>) stepExecution.getJobExecution().getExecutionContext().get("news");
@@ -67,7 +67,7 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("FilterNewsItemsTasklet end");
+        log.debug("FilterNewsItemsTasklet end");
 
         stepExecution.getJobExecution()
                 .getExecutionContext()
@@ -102,7 +102,7 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
             return RepeatStatus.FINISHED;
         }
 
-        log.info("Filtering up to "+ max +" items...");
+        log.info("Filtering up to " + max + " items...");
         var last = lastItems.get(lastItems.size() - 1);
 
         // Take all items until last item.
