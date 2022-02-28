@@ -1,6 +1,4 @@
-img220(${THUMBNAIL})
-
-[${TITLE}](${LINK})
+[img220(${THUMBNAIL})
+${TITLE}](${LINK})
 
 ${PREVIEW}
-
