@@ -41,7 +41,7 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        log.info("ReadPageTasklet init");
+        log.debug("ReadPageTasklet init");
     }
 
     /**
@@ -63,7 +63,7 @@ public class ReadPageTasklet implements Tasklet, StepExecutionListener {
                 .getExecutionContext()
                 .put("homepage", document);
 
-        log.info("ReadPageTasklet end");
+        log.debug("ReadPageTasklet end");
 
         return ExitStatus.COMPLETED;
     }

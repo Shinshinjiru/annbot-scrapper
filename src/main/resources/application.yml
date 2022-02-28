@@ -6,3 +6,12 @@ ann:
 anilist:
   api: https://graphql.anilist.co
   authToken: ${AUTH_TOKEN}
+  
+spring:
+  main:
+    banner-mode: "off"
+
+logging:
+  level:
+    root: error
+    com.shinshinjiru: info

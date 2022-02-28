@@ -41,7 +41,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        log.info("ProcessPageTasklet init");
+        log.debug("ProcessPageTasklet init");
 
         //noinspection ConstantConditions
         news = Jsoup.parse((String) stepExecution.getJobExecution().getExecutionContext().get("homepage"))
@@ -65,7 +65,7 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
      */
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("ProcessPageTasklet end");
+        log.debug("ProcessPageTasklet end");
 
         stepExecution.getJobExecution()
                 .getExecutionContext()
