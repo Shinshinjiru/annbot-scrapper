@@ -52,7 +52,7 @@ public class Client {
             var msg = new StringBuilder();
 
             news.forEach(i -> {
-                var link = url + "/." + i.getId();
+                var link = url + i.getId();
 
                 msg.append(
                         tpl.replace("${LINK}", link)

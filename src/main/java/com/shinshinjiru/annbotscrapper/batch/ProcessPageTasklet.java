@@ -105,15 +105,14 @@ public class ProcessPageTasklet implements Tasklet, StepExecutionListener {
                     .trim();
 
             // <div class="comments"><a href="/cms/discuss/{ID}">comments</a></div>
-            var id = n.select(".wrap .byline .comments a")
-                    .attr("href")
-                    .split("/")[3];
+            var id = n.select(".wrap h3 a")
+                    .attr("href");
 
             var item =  NewsItem.builder()
                             .thumbnail(url + thumbnail)
                             .title(title)
                             .preview(preview)
-                            .id(Integer.parseInt(id))
+                            .id(id)
                             .build();
 
             log.debug(item.toString());

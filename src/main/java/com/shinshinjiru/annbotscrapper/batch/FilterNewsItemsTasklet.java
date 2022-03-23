@@ -107,7 +107,7 @@ public class FilterNewsItemsTasklet implements Tasklet, StepExecutionListener {
 
         // Take all items until last item.
         var resultsUntil = result.stream()
-                .takeWhile(n -> n.getId() != last.getId())
+                .takeWhile(n -> !n.getId().equalsIgnoreCase(last.getId()))
                 .collect(Collectors.toList());
 
         // Return last MAX items.

@@ -21,5 +21,5 @@ public class NewsItem implements Serializable {
     private String thumbnail;
     private String title;
     private String preview;
-    private int id;
+    private String id;
 }
